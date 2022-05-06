@@ -13,6 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
 
+// get js and css files from public
+app.use(express.static('public'));
+
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
     let filteredResults = animalsArray;
@@ -95,11 +98,27 @@ app.post('/api/animals', (req, res) => {
 
     // if any data in req.body is incorrect send 400 error back
     if (!validateAnimal(req.body)) {
-        res.status(400).send('The animal is not properly formated.');
+        res.status(400).send('The animal is not properly formatted.');
     } else {
         const animal = createNewAnimal(req.body, animals);
         res.json(animal);
     }
+});
+
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
